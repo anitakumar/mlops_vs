@@ -8,6 +8,9 @@ add to  path	%JAVA_HOME%\bin
 3. scikit-learn
 pip install scikit_learn
 
+3. # intsall matplotlib
+pip install matplotlib
+
 3. # Juypter lab
 juypter lab to run the lab
 

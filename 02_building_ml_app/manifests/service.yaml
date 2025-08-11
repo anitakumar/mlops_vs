@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mlapp-service
+  namespace: mlops-visual
+  labels:
+    app: mlapp
+spec:
+  selector:
+    app: mlapp
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 5000

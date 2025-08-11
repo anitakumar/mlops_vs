@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: mlapp-pod
+  namespace: mlops-visual
+  labels:
+    app: mlapp
+    tier: frontend
+spec:
+  containers:
+  - name: mlapp-container
+    image: dockerak100/my_house_price:latest
+    imagePullPolicy: Always  
+    ports:
+      - containerPort: 5000
+  
+  

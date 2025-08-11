@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mlapp-deployment
+  namespace: mlops-visual
+  labels:
+    app: mlapp
+    
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: mlapp
+  template:
+    metadata:
+      labels:
+        app: mlapp
+    spec:
+      containers:
+      - name: mlapp-container
+        image: dockerak100/my_house_price:latest
+        imagePullPolicy: Always  
+        ports:
+          - containerPort: 5000      
+ 

@@ -1,0 +1,6 @@
+[core]
+    remote = storage
+['remote "myremote"']
+    url = C:/Users/anita/AppData/Local/Temp/dvcstore
+['remote "storage"']
+    url = s3://visualmlops-ai-artifacts/dvcstore

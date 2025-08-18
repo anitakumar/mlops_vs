@@ -7,7 +7,37 @@ from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 import pickle
+import boto3 # Import necessary libraries
+from botocore.exceptions import NoCredentialsError, PartialCredentialsError
 
+#list my buckets
+s3 = boto3.client('s3')
+
+
+# Fuction to list all S3 buckets
+def list_buckets():
+    try:
+        response = s3.list_buckets()
+        print("Existing buckets:")
+        for bucket in response['Buckets']:
+            print(f'  {bucket["Name"]}')
+    except (NoCredentialsError, PartialCredentialsError):
+        print("Credentials not available or incomplete.")
+#Uplaod the model to S3
+def upload_model_to_s3(file_path, bucket_name, object_name=None):
+    if object_name is None:
+        object_name = file_path
+    try:
+        s3.upload_file(file_path, bucket_name, object_name)
+        print(f"Model uploaded to S3 bucket '{bucket_name}' as '{object_name}'.")
+    except FileNotFoundError:
+        print(f"The file {file_path} was not found.")
+    except NoCredentialsError:
+        print("Credentials not available.") 
+    except PartialCredentialsError:
+        print("Incomplete credentials provided.")
+# Set the S3 bucket name
+bucket_name = 'visualmlops-ai-artifacts'  # Replace with your S3 bucket name
 # Load the California Housing Prices dataset
 # california_housing = fetch_california_housing(as_frame=True)
 
@@ -35,9 +65,18 @@ model = LinearRegression()
 
 model.fit(X_train, y_train)
 
+list_buckets()  # List existing S3 buckets
+
 #Location of where to put the model
-file_path= 'model/house_price_model.pkl'
-pickle.dump(model,open(file_path,'wb'))
+local_file_path= 'model/house_price_model.pkl'
+# Save the model to a pickle file
+print("Saving the model to a pickle file...")
+pickle.dump(model,open(local_file_path,'wb'))
+
+# Upload the model to S3
+s3_object_name= 'model/house_price_model.pkl'  # Name of the object in S3
+print(f"Uploading the model to S3 bucket '{bucket_name}/{s3_object_name}'...")
+upload_model_to_s3(local_file_path, bucket_name, object_name=s3_object_name)
 
 # Step 4: Model Evaluation
 # Make predictions on the testing data
@@ -45,7 +84,7 @@ print("Making predictions on the test set...")
 y_pred = model.predict(X_test)
 
 
-with open(file_path,'rb') as file:
+with open(local_file_path,'rb') as file:
     model_pickle = pickle.load(file)
 # Train the model using the training data
 

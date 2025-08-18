@@ -2,3 +2,8 @@ numpy
 pandas
 scikit-learn
 flask
+boto3
+dvc
+pytest
+dvc_s3
+
